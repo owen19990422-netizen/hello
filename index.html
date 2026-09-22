@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>給王小丸的約會邀請 🐶💗</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", sans-serif;
+    background: linear-gradient(135deg, #fff3f7, #ffe8ef);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6d4652;
+    overflow: hidden;
+  }
+  .hearts span {
+    position: fixed;
+    font-size: 22px;
+    animation: float 5s linear infinite;
+    opacity: .7;
+    pointer-events: none;
+  }
+  .hearts span:nth-child(1){left:8%;animation-delay:0s}
+  .hearts span:nth-child(2){left:22%;animation-delay:1.2s}
+  .hearts span:nth-child(3){left:78%;animation-delay:2s}
+  .hearts span:nth-child(4){left:90%;animation-delay:.5s}
+  @keyframes float {
+    0% { transform: translateY(110vh) rotate(0deg); opacity:0; }
+    15% {opacity:.75}
+    100% { transform: translateY(-15vh) rotate(25deg); opacity:0; }
+  }
+  .card {
+    width: min(90vw, 430px);
+    min-height: 610px;
+    background: rgba(255,255,255,.92);
+    border-radius: 32px;
+    padding: 38px 28px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(181, 91, 121, .18);
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .screen { display: none; animation: pop .45s ease; }
+  .screen.active { display: block; }
+  @keyframes pop {
+    from {opacity:0; transform:translateY(12px) scale(.98)}
+    to {opacity:1; transform:none}
+  }
+  .dog {
+    font-size: 92px;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 7px 4px rgba(0,0,0,.06));
+  }
+  h1 {
+    font-size: 29px;
+    line-height: 1.4;
+    margin: 8px 0 12px;
+    color: #bd5b79;
+  }
+  p {
+    font-size: 17px;
+    line-height: 1.7;
+    margin: 8px 0 26px;
+  }
+  button {
+    border: 0;
+    border-radius: 999px;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+    font-family: inherit;
+  }
+  .yes {
+    background: #f58ba8;
+    color: white;
+    box-shadow: 0 8px 18px rgba(245,139,168,.3);
+  }
+  .yes:hover { transform: translateY(-2px) scale(1.03); }
+  .back {
+    background: #fff0f4;
+    color: #bd5b79;
+    margin-top: 12px;
+    font-size: 14px;
+  }
+  .calendar-icon { font-size: 65px; margin-bottom: 8px; }
+  label {
+    display: block;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 14px 0 7px 4px;
+  }
+  input {
+    width: 100%;
+    border: 2px solid #f7c6d3;
+    border-radius: 16px;
+    padding: 14px 15px;
+    font-size: 17px;
+    color: #6d4652;
+    background: #fffafb;
+    outline: none;
+    font-family: inherit;
+  }
+  input:focus { border-color: #f58ba8; }
+  .hint { font-size: 13px; color:#9d7b86; margin-top:10px; }
+  .result {
+    background: #fff3f7;
+    border-radius: 20px;
+    padding: 17px;
+    margin: 18px 0;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+  .paw { font-size: 24px; }
+</style>
+</head>
+<body>
+<div class="hearts"><span>💗</span><span>🌸</span><span>💕</span><span>🐾</span></div>
+
+<main class="card">
+  <section id="screen1" class="screen active">
+    <div class="dog">🐶</div>
+    <h1>王小丸，願不願<br>跟我約會？</h1>
+    <p>有一個超級可愛的人<br>想邀請你出去玩一下下 💕</p>
+    <button class="yes" onclick="next()">願意 💗</button>
+  </section>
+
+  <section id="screen2" class="screen">
+    <div class="calendar-icon">📅</div>
+    <h1>那我們約哪一天？</h1>
+    <p>請挑一個未來的日子<br>期待跟王小丸見面 🐾</p>
+
+    <label for="date">約會日期</label>
+    <input id="date" type="date">
+
+    <label for="time">約會時間</label>
+    <input id="time" type="time">
+
+    <div class="hint">只能選今天之後的日期 ✨</div>
+    <button class="yes" style="margin-top:20px" onclick="confirmDate()">就這天！💞</button>
+    <button class="back" onclick="back()">← 回上一頁</button>
+  </section>
+
+  <section id="screen3" class="screen">
+    <div class="dog">🥰</div>
+    <h1>約會成功！</h1>
+    <div class="result" id="result"></div>
+    <p>王小丸請準時赴約 🐶💗<br>到時候不可以放我鴿子喔！</p>
+    <div class="paw">🐾 💕 🐾</div>
+    <button class="yes" onclick="restart()">再看一次 💗</button>
+  </section>
+</main>
+
+<script>
+  const dateInput = document.getElementById('date');
+  const timeInput = document.getElementById('time');
+
+  // 僅允許今天之後的日期
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+  const yyyy = tomorrow.getFullYear();
+  const mm = String(tomorrow.getMonth() + 1).padStart(2,'0');
+  const dd = String(tomorrow.getDate()).padStart(2,'0');
+  dateInput.min = `${yyyy}-${mm}-${dd}`;
+
+  function next() {
+    document.getElementById('screen1').classList.remove('active');
+    document.getElementById('screen2').classList.add('active');
+  }
+
+  function back() {
+    document.getElementById('screen2').classList.remove('active');
+    document.getElementById('screen1').classList.add('active');
+  }
+
+  function confirmDate() {
+    if (!dateInput.value) {
+      alert('先選一個約會日期嘛 🥺💕');
+      return;
+    }
+    if (!timeInput.value) {
+      alert('還要選約會時間喔 ⏰💗');
+      return;
+    }
+
+    const [y,m,d] = dateInput.value.split('-');
+    const [h,min] = timeInput.value.split(':');
+    const date = new Date(Number(y), Number(m)-1, Number(d));
+    const week = ['日','一','二','三','四','五','六'][date.getDay()];
+
+    document.getElementById('result').innerHTML =
+      `📅 <b>${y} 年 ${Number(m)} 月 ${Number(d)} 日（星期${week}）</b><br>` +
+      `⏰ <b>${h}:${min}</b><br><br>` +
+      `王小丸已經答應你啦！🎀`;
+    document.getElementById('screen2').classList.remove('active');
+    document.getElementById('screen3').classList.add('active');
+  }
+
+  function restart() {
+    document.getElementById('screen3').classList.remove('active');
+    document.getElementById('screen1').classList.add('active');
+  }
+</script>
+</body>
+</html>
